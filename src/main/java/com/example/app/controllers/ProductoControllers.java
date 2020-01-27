@@ -1,5 +1,7 @@
 package com.example.app.controllers;
 
+import java.nio.charset.CodingErrorAction;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import com.example.app.models.DtoCreditAccount;
 import com.example.app.models.CreditAccount;
+
 import com.example.app.models.TypeCreditAccount;
 import com.example.app.service.ProductoService;
 import com.example.app.service.TipoProductoService;
@@ -84,42 +87,43 @@ public class ProductoControllers {
 					});
 	}
 	
-	//actualiza al momento de hacer la transaccion desde servicio operaciones(movimientos)
-	@PutMapping("/consumo/{numero_cuenta}/{monto}")
-	public Mono<CreditAccount> retiroBancario(@PathVariable Double monto, @PathVariable String numero_cuenta) {
-			return productoService.consumos(monto, numero_cuenta);
+	@GetMapping("/dni/{dni}")
+	public Flux<CreditAccount> listProductoByDicliente(@PathVariable String dni) {
+		Flux<CreditAccount> producto = productoService.findAllProductoByDniCliente(dni);
+		return producto;
 	}
 	
 	//actualiza al momento de hacer la transaccion desde servicio operaciones(movimientos)
-	@PutMapping("/pago/{numero_cuenta}/{monto}")
-	public Mono<CreditAccount> despositoBancario(@PathVariable Double monto, @PathVariable String numero_cuenta) {
+	@PutMapping("/consumo/{numero_cuenta}/{monto}/{codigo_bancario}")
+	public Mono<CreditAccount> retiroBancario(@PathVariable Double monto, @PathVariable String numero_cuenta, 
+			@PathVariable String codigo_bancario) {
+			return productoService.consumos(monto, numero_cuenta,codigo_bancario);
+	}
+	
+	//actualiza al momento de hacer la transaccion desde servicio operaciones(movimientos)
+	@PutMapping("/pago/{numero_cuenta}/{monto}/{codigo_bancario}")
+	public Mono<CreditAccount> despositoBancario(@PathVariable Double monto, @PathVariable String numero_cuenta,
+			@PathVariable String codigo_bancario) {
 		
-			return productoService.pagos(monto, numero_cuenta);
+			return productoService.pagos(monto, numero_cuenta,codigo_bancario);
 	}
 	
 	//Muestra la cuenta bancaria por el numero de tarjeta
-	@GetMapping("/numero_cuenta/{numero_cuenta}")
-	public Mono<CreditAccount> consulta1(@PathVariable String numero_cuenta) {
-		Mono<CreditAccount> producto = productoService.listProdNumTarj(numero_cuenta);
+	@GetMapping("/numero_cuenta/{numero_cuenta}/{codigo_bancario}")
+	public Mono<CreditAccount> consulta1(@PathVariable String numero_cuenta, @PathVariable String codigo_bancario) {
+		Mono<CreditAccount> producto = productoService.listProdNumTarj(numero_cuenta, codigo_bancario);
 		return producto;
 	}
 	
 	// Muestra los saldos, deuda linea de credito de las cuentas de un cliente
 	// se consulta por el numero de cuenta
-	@GetMapping("/saldoDisponible/{numero_cuenta}")
-	public Mono<DtoCreditAccount> SaldosBancarios(@PathVariable String numero_cuenta) {
+	@GetMapping("/saldoDisponible/{numero_cuenta}/{codigo_bancario}")
+	public Mono<DtoCreditAccount> SaldosBancarios(@PathVariable String numero_cuenta, @PathVariable String codigo_bancario) {
 
-		Mono<CreditAccount> oper = productoService.listProdNumTarj(numero_cuenta);
+		Mono<CreditAccount> oper = productoService.listProdNumTarj(numero_cuenta, codigo_bancario);
 
 		return oper.flatMap(c -> {
-
 			DtoCreditAccount pp = new DtoCreditAccount();
-			/*tipoProducto tp = new tipoProducto();
-			
-			tp.setIdTipo(c.getTipoProducto().getIdTipo());
-			tp.setDescripcion(c.getTipoProducto().getDescripcion());*/
-			
-			pp.setDni(c.getDni());
 			pp.setNumero_cuenta(c.getNumero_cuenta());
 			pp.setSaldo(c.getSaldo());
 	

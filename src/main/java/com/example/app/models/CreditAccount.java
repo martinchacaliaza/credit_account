@@ -42,7 +42,8 @@ public class CreditAccount {
 	private String usuario;
 	@NotEmpty
 	private String clave;
-	
+	@NotEmpty
+	private String codigo_bancario;
 
 	
 	//private tipoProducto tipoCliente;

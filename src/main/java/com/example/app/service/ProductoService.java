@@ -12,9 +12,11 @@ public interface ProductoService {
 	Mono<CreditAccount> findByIdProducto(String id);
 	Mono<CreditAccount> saveProducto(CreditAccount clientePersonal);
 
-	Mono<CreditAccount> consumos(Double monto, String numero_cuenta);
+	Mono<CreditAccount> consumos(Double monto, String numero_cuenta, String codigo_bancario);
 	
-	Mono<CreditAccount> pagos(Double monto, String numero_cuenta);
+	Mono<CreditAccount> pagos(Double monto, String numero_cuenta, String codigo_bancario);
 
-	Mono<CreditAccount> listProdNumTarj(String numero_cuenta);
+	Mono<CreditAccount> listProdNumTarj(String numero_cuenta, String codigo_bancario);
+	
+	Flux<CreditAccount> findAllProductoByDniCliente(String dni);
 }
