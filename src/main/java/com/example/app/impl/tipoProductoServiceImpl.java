@@ -41,5 +41,11 @@ public class tipoProductoServiceImpl implements TipoProductoService{
 	public Mono<Void> deleteTipo(TypeCreditAccount tipoProducto) {
 		return tipoProductoDao.delete(tipoProducto);
 	}
+	@Override
+	public Mono<TypeCreditAccount> viewidTipoProducto(String idTipo) {
+		
+		return tipoProductoDao.viewidTipo(idTipo);
+	}
+	
 	
 }

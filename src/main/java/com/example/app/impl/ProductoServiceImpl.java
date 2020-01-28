@@ -72,4 +72,10 @@ public class ProductoServiceImpl implements ProductoService {
 		return productoDao.viewDniCliente(dni);
 	}
 
+	@Override
+	public Mono<Void> deleteProducto(CreditAccount prod) {
+		// TODO Auto-generated method stub
+		return productoDao.delete(prod);
+	}
+
 }

@@ -1,6 +1,7 @@
 package com.example.app.service;
 
 
+
 import com.example.app.models.CreditAccount;
 
 import reactor.core.publisher.Flux;
@@ -10,6 +11,7 @@ public interface ProductoService {
 
 	Flux<CreditAccount> findAllProducto();
 	Mono<CreditAccount> findByIdProducto(String id);
+	
 	Mono<CreditAccount> saveProducto(CreditAccount clientePersonal);
 
 	Mono<CreditAccount> consumos(Double monto, String numero_cuenta, String codigo_bancario);
@@ -19,4 +21,6 @@ public interface ProductoService {
 	Mono<CreditAccount> listProdNumTarj(String numero_cuenta, String codigo_bancario);
 	
 	Flux<CreditAccount> findAllProductoByDniCliente(String dni);
+	
+	Mono<Void> deleteProducto(CreditAccount prod);
 }

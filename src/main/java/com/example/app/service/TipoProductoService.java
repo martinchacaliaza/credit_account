@@ -1,9 +1,6 @@
 package com.example.app.service;
 
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import com.example.app.models.TypeCreditAccount;
 
 import reactor.core.publisher.Flux;
@@ -15,5 +12,6 @@ public interface TipoProductoService {
 	Mono<TypeCreditAccount> findByIdTipoProducto(String id);
 	Mono<TypeCreditAccount> saveTipoProducto(TypeCreditAccount tipoProducto);
 	Mono<Void> deleteTipo(TypeCreditAccount tipoProducto);
+	Mono<TypeCreditAccount> viewidTipoProducto(String idTipo);
 	
 }
