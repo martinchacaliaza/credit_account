@@ -15,7 +15,7 @@ public interface ProductoDao extends ReactiveMongoRepository<CreditAccount, Stri
 
 	
 	/*@Query("{ 'numero_cuenta' : ?0 }")
-	Flux<Producto> viewNumTarjeta(String numero_cuenta);*/
+	Flux<CreditAccount> viewNumTarjeta(String numero_cuenta);*/
 	
 	@Query("{ 'numero_cuenta' : ?0, 'codigo_bancario': ?1}")
 	Mono<CreditAccount> viewNumTarjeta(String numero_cuenta, String codigo_bancario);
@@ -23,5 +23,8 @@ public interface ProductoDao extends ReactiveMongoRepository<CreditAccount, Stri
 
 	@Query("{ 'dni' : ?0 }")
 	Flux<CreditAccount> viewDniCliente(String dni);
+	
+	@Query("{ 'dni' : ?0 , $where : 'this.consumo > 0'}  }")
+	Flux<CreditAccount> viewDniCliente2(String dni);
 	
 }

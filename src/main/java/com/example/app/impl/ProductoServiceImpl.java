@@ -34,15 +34,14 @@ public class ProductoServiceImpl implements ProductoService {
 	@Override
 	public Mono<CreditAccount> consumos(Double monto, String numTarjeta, String codigo_bancario) {
 		return productoDao.viewNumTarjeta(numTarjeta, codigo_bancario).flatMap(c -> {
-			if (monto < c.getSaldo()) {
+			if (monto <= c.getSaldo()) {
 				c.setSaldo((c.getSaldo() - monto));
 				c.setConsumo(c.getConsumo() + monto);
 				return productoDao.save(c);
-			
-			}else {
-			return Mono.error(new InterruptedException(
-					"No tiene el saldo suficiente para realizar" 
-			+ " el consumo, tiene un saldo de: " + c.getSaldo()));
+
+			} else {
+				return Mono.error(new InterruptedException("No tiene el saldo suficiente para realizar"
+						+ " el consumo, tiene un saldo de: " + c.getSaldo()));
 			}
 		});
 	}
@@ -67,6 +66,11 @@ public class ProductoServiceImpl implements ProductoService {
 		return productoDao.viewNumTarjeta(num, codigo_bancario);
 	}
 
+	/*@Override
+	public Flux<CreditAccount> listProdNumTarj(String num) {
+		return productoDao.viewNumTarjeta(num);
+	}*/
+
 	@Override
 	public Flux<CreditAccount> findAllProductoByDniCliente(String dni) {
 		return productoDao.viewDniCliente(dni);
@@ -77,5 +81,12 @@ public class ProductoServiceImpl implements ProductoService {
 		// TODO Auto-generated method stub
 		return productoDao.delete(prod);
 	}
+
+	@Override
+	public Flux<CreditAccount> findAllProductoByDniCliente2(String dni) {
+		
+		return productoDao.viewDniCliente2(dni);
+	}
+
 
 }

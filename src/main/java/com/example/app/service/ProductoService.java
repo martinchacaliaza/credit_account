@@ -20,7 +20,12 @@ public interface ProductoService {
 
 	Mono<CreditAccount> listProdNumTarj(String numero_cuenta, String codigo_bancario);
 	
+	//Flux<CreditAccount> listProdNumTarj(String numero_cuenta);
+
 	Flux<CreditAccount> findAllProductoByDniCliente(String dni);
 	
 	Mono<Void> deleteProducto(CreditAccount prod);
+	
+	Flux<CreditAccount> findAllProductoByDniCliente2(String dni);
+
 }
