@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 public interface ProductoService {
 
 	Flux<CreditAccount> findAllProducto();
+	
 	Mono<CreditAccount> findByIdProducto(String id);
 	
 	Mono<CreditAccount> saveProducto(CreditAccount clientePersonal);
@@ -19,13 +20,9 @@ public interface ProductoService {
 	Mono<CreditAccount> pagos(Double monto, String numero_cuenta, String codigo_bancario);
 
 	Mono<CreditAccount> listProdNumTarj(String numero_cuenta, String codigo_bancario);
-	
-	//Flux<CreditAccount> listProdNumTarj(String numero_cuenta);
 
-	Flux<CreditAccount> findAllProductoByDniCliente(String dni);
+	Flux<CreditAccount> findByDni(String dni);
 	
 	Mono<Void> deleteProducto(CreditAccount prod);
-	
-	Flux<CreditAccount> findAllProductoByDniCliente2(String dni);
 
 }

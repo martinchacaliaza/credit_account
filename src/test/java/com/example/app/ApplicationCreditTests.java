@@ -59,7 +59,7 @@ class ApplicationCreditTests {
 	
 	@Test
 	public void findAllProductoByDniCliente() {
-		CreditAccount cred = creditService.findAllProductoByDniCliente("123456").blockFirst();
+		CreditAccount cred = creditService.findByDni("123456").blockFirst();
 		credit.get().uri("/api/ProductoCredito/dni/{dni}", Collections.singletonMap("dni", cred.getDni()))
 		.accept(MediaType.APPLICATION_JSON_UTF8)
 		.exchange()

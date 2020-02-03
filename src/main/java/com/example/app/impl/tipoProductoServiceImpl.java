@@ -27,7 +27,7 @@ public class tipoProductoServiceImpl implements TipoProductoService{
 	@Override
 	public Mono<TypeCreditAccount> findByIdTipoProducto(String id)
 	{
-	return tipoProductoDao.findById(id);
+	return tipoProductoDao.findByIdTipo(id);
 	
 	}
 	
@@ -44,7 +44,7 @@ public class tipoProductoServiceImpl implements TipoProductoService{
 	@Override
 	public Mono<TypeCreditAccount> viewidTipoProducto(String idTipo) {
 		
-		return tipoProductoDao.viewidTipo(idTipo);
+		return tipoProductoDao.findByIdTipo(idTipo);
 	}
 	
 	

@@ -33,7 +33,8 @@ public class ProductoServiceImpl implements ProductoService {
 
 	@Override
 	public Mono<CreditAccount> consumos(Double monto, String numTarjeta, String codigo_bancario) {
-		return productoDao.viewNumTarjeta(numTarjeta, codigo_bancario).flatMap(c -> {
+		return productoDao.consultaNumCuentaByCodBanc(numTarjeta, codigo_bancario)
+		.flatMap(c -> {
 			if (monto <= c.getSaldo()) {
 				c.setSaldo((c.getSaldo() - monto));
 				c.setConsumo(c.getConsumo() + monto);
@@ -48,7 +49,7 @@ public class ProductoServiceImpl implements ProductoService {
 
 	@Override
 	public Mono<CreditAccount> pagos(Double monto, String numTarjeta, String codigo_bancario) {
-		return productoDao.viewNumTarjeta(numTarjeta, codigo_bancario).flatMap(c -> {
+		return productoDao.consultaNumCuentaByCodBanc(numTarjeta, codigo_bancario).flatMap(c -> {
 
 			if (c.getConsumo() == 0.0) {
 				return Mono.error(new InterruptedException("No tiene deuda"));
@@ -63,17 +64,12 @@ public class ProductoServiceImpl implements ProductoService {
 
 	@Override
 	public Mono<CreditAccount> listProdNumTarj(String num, String codigo_bancario) {
-		return productoDao.viewNumTarjeta(num, codigo_bancario);
+		return productoDao.consultaNumCuentaByCodBanc(num, codigo_bancario);
 	}
 
-	/*@Override
-	public Flux<CreditAccount> listProdNumTarj(String num) {
-		return productoDao.viewNumTarjeta(num);
-	}*/
-
 	@Override
-	public Flux<CreditAccount> findAllProductoByDniCliente(String dni) {
-		return productoDao.viewDniCliente(dni);
+	public Flux<CreditAccount> findByDni(String dni) {
+		return productoDao.findByDni(dni);
 	}
 
 	@Override
@@ -82,11 +78,6 @@ public class ProductoServiceImpl implements ProductoService {
 		return productoDao.delete(prod);
 	}
 
-	@Override
-	public Flux<CreditAccount> findAllProductoByDniCliente2(String dni) {
-		
-		return productoDao.viewDniCliente2(dni);
-	}
 
 
 }

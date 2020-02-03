@@ -109,7 +109,7 @@ public class ProductoControllers {
 	@ApiOperation(value = "LISTA PRODUCTOS POR DNI DEL CLIENTE", notes="")
 	@GetMapping("/dni/{dni}")
 	public Flux<CreditAccount> listProductoByDicliente(@PathVariable String dni) {
-			Flux<CreditAccount> producto = productoService.findAllProductoByDniCliente(dni);
+			Flux<CreditAccount> producto = productoService.findByDni(dni);
 			return producto;
 
 	}
@@ -117,7 +117,7 @@ public class ProductoControllers {
 	@ApiOperation(value = "LISTA CREDITOS QUE NO TENGAN DEUDA - POR DNI DEL CLIENTE", notes="")
 	@GetMapping("/dniDeuda/{dni}")
 	public Flux<CreditAccount> listProductoByDicliente2(@PathVariable String dni) {
-			Flux<CreditAccount> producto = productoService.findAllProductoByDniCliente2(dni);
+			Flux<CreditAccount> producto = productoService.findByDni(dni);
 			return producto;
 
 	}

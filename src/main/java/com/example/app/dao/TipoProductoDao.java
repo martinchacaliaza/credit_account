@@ -11,6 +11,9 @@ import reactor.core.publisher.Mono;
 public interface TipoProductoDao extends ReactiveMongoRepository<TypeCreditAccount, String> {
 
 
-	@Query("{ 'idTipo' : ?0}")
-	Mono<TypeCreditAccount> viewidTipo(String id);
+
+	Mono<TypeCreditAccount> findByIdTipo(String id);
+	
+
+	
 }
