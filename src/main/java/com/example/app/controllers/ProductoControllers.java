@@ -22,13 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.support.SessionStatus;
 
 import com.example.app.models.DtoCreditAccount;
-
+import com.example.app.exception.RequestException;
 import com.example.app.models.CreditAccount;
 
 import com.example.app.models.TypeCreditAccount;
 import com.example.app.service.ProductoService;
 import com.example.app.service.TipoProductoService;
-import com.sistema.app.exception.RequestException;
 
 import io.swagger.annotations.ApiOperation;
 import reactor.core.publisher.Flux;
