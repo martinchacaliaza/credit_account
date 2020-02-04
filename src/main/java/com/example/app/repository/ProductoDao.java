@@ -1,4 +1,4 @@
-package com.example.app.dao;
+package com.example.app.repository;
 
 
 import org.springframework.data.mongodb.repository.Query;
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 public interface ProductoDao extends ReactiveMongoRepository<CreditAccount, String> {
 
 	
-	@Query("{ 'numero_cuenta' : ?0 , 'codigo_bancario' : ?1}")
+	@Query("{ 'numero_cuenta' : ?0 , 'codigo_bancario' : ?1 }")
 	Mono<CreditAccount> consultaNumCuentaByCodBanc(String numero_cuenta, String codigo_bancario);
 	
 	

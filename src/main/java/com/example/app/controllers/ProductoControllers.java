@@ -1,16 +1,8 @@
 package com.example.app.controllers;
 
-import java.nio.charset.CodingErrorAction;
-
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,15 +11,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.support.SessionStatus;
-
-import com.example.app.models.DtoCreditAccount;
-import com.example.app.exception.RequestException;
+import com.example.app.dto.dtoCreditAccount;
 import com.example.app.models.CreditAccount;
-
-import com.example.app.models.TypeCreditAccount;
 import com.example.app.service.ProductoService;
-import com.example.app.service.TipoProductoService;
+
 
 import io.swagger.annotations.ApiOperation;
 import reactor.core.publisher.Flux;
@@ -36,14 +23,9 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/ProductoCredito")
 @RestController
 public class ProductoControllers {
-	
-	
-	
+
 	@Autowired
 	private ProductoService productoService;
-	
-	@Autowired
-	private TipoProductoService tipoProductoService;
 	
 	@GetMapping
 	public Mono<ResponseEntity<Flux<CreditAccount>>> findAll() 
@@ -51,7 +33,6 @@ public class ProductoControllers {
 		return Mono.just(
 						ResponseEntity
 						.ok()
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
 						.body(productoService.findAllProducto())
 						
 						);
@@ -61,7 +42,6 @@ public class ProductoControllers {
 	@GetMapping("/{id}")
 	public Mono<ResponseEntity<CreditAccount>> viewId(@PathVariable String id){
 		return productoService.findByIdProducto(id).map(p-> ResponseEntity.ok()
-				.contentType(MediaType.APPLICATION_JSON_UTF8)
 				.body(p))
 				.defaultIfEmpty(ResponseEntity.notFound().build());	
 	}
@@ -77,20 +57,7 @@ public class ProductoControllers {
 	@ApiOperation(value = "GUARDA CUENTAS DE CREDITO VALIDANDO SI EL [TIPO PROD] EXISTE", notes="")
 	@PostMapping
 	public Mono<CreditAccount> guardarProducto(@RequestBody CreditAccount pro){
-	
-		Mono<TypeCreditAccount> tipo= this.tipoProductoService.viewidTipoProducto(pro.getTipoProducto().getIdTipo());
-			return tipo
-					.defaultIfEmpty(new TypeCreditAccount())
-					.flatMap(c -> {
-						if (c.getIdTipo() ==null) {
-							return Mono.error(new InterruptedException("El tipo de Producto no existe"));
-						}
-							return Mono.just(c);
-					})
-					.flatMap(t->{
-						pro.setTipoProducto(t);
-						return productoService.saveProducto(pro);
-					});
+			return productoService.saveProducto(pro);
 	}
 	
 	
@@ -158,12 +125,12 @@ public class ProductoControllers {
 	@ApiOperation(value = " Muestra los saldos, deuda linea de credito de las cuentas de un cliente"
 			+ " se consulta por el numero de cuenta", notes="")
 	@GetMapping("/saldoDisponible/{numero_cuenta}/{codigo_bancario}")
-	public Mono<DtoCreditAccount> SaldosBancarios(@PathVariable String numero_cuenta, @PathVariable String codigo_bancario) {
+	public Mono<dtoCreditAccount> SaldosBancarios(@PathVariable String numero_cuenta, @PathVariable String codigo_bancario) {
 
 		Mono<CreditAccount> oper = productoService.listProdNumTarj(numero_cuenta, codigo_bancario);
 
 		return oper.flatMap(c -> {
-			DtoCreditAccount pp = new DtoCreditAccount();
+			dtoCreditAccount pp = new dtoCreditAccount();
 			
 			pp.setDni(c.getDni());
 			pp.setNumero_cuenta(c.getNumero_cuenta());

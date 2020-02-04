@@ -1,4 +1,4 @@
-package com.example.app.models;
+package com.example.app.dto;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -8,7 +8,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-public class DtoCreditAccount {
+public class dtoCreditAccount {
 
 	private String dni;
 	private String numero_cuenta;
