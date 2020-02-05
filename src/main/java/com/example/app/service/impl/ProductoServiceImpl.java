@@ -41,9 +41,9 @@ public class ProductoServiceImpl implements ProductoService {
 	@Override
 	public Mono<CreditAccount> saveProducto(CreditAccount cli) {
 		Mono<TypeCreditAccount> tipo = this.tipoProductoDao.findByIdTipo(cli.getTipoProducto().getIdTipo());
-			return tipo.defaultIfEmpty(new TypeCreditAccount()).flatMap(c -> {
+			return tipo.defaultIfEmpty(new TypeCreditAccount()).flatMap(c->{
 				if (c.getIdTipo() == null) {
-					throw new RequestException("el tipo cliente no existe");
+					throw new RequestException("el tipo producto no existe");
 
 				}
 				return Mono.just(c);
@@ -51,12 +51,12 @@ public class ProductoServiceImpl implements ProductoService {
 				cli.setTipoProducto(t);
 				Mono<dtoClient> cl = WebClient.builder().baseUrl("http://" + valor + "/clientes/api/Clientes/").build().get()
 						.uri("/dni/" + cli.getDni()).retrieve().bodyToMono(dtoClient.class);
-				return cl.flatMap(a -> {
+				return cl.flatMap(a -> {	
 					
 					if (a.getDni().equalsIgnoreCase("")) {
 						return Mono.empty();
 						
-					}else if(!a.getCodigo_bancario().equalsIgnoreCase(cli.getCodigo_bancario())) {		
+					}else if(!a.getCodigoBancario().equalsIgnoreCase(cli.getCodigoBancario())) {		
 						throw new RequestException("Cliente no pertenece al banco(codigo bancario)");
 					}	
 				return productoDao.save(cli);
@@ -67,7 +67,7 @@ public class ProductoServiceImpl implements ProductoService {
 
 	@Override
 	public Mono<CreditAccount> consumos(Double monto, String numTarjeta, String codigo_bancario) {
-		return productoDao.consultaNumCuentaByCodBanc(numTarjeta, codigo_bancario).flatMap(c -> {
+		return productoDao.findByNumeroCuentaAndCodigoBancario(numTarjeta, codigo_bancario).flatMap(c -> {
 			if (monto <= c.getSaldo()) {
 				c.setSaldo((c.getSaldo() - monto));
 				c.setConsumo(c.getConsumo() + monto);
@@ -82,7 +82,7 @@ public class ProductoServiceImpl implements ProductoService {
 
 	@Override
 	public Mono<CreditAccount> pagos(Double monto, String numTarjeta, String codigo_bancario) {
-		return productoDao.consultaNumCuentaByCodBanc(numTarjeta, codigo_bancario).flatMap(c -> {
+		return productoDao.findByNumeroCuentaAndCodigoBancario(numTarjeta, codigo_bancario).flatMap(c -> {
 
 			if (c.getConsumo() == 0.0) {
 				return Mono.error(new InterruptedException("No tiene deuda"));
@@ -97,7 +97,7 @@ public class ProductoServiceImpl implements ProductoService {
 
 	@Override
 	public Mono<CreditAccount> listProdNumTarj(String num, String codigo_bancario) {
-		return productoDao.consultaNumCuentaByCodBanc(num, codigo_bancario);
+		return productoDao.findByNumeroCuentaAndCodigoBancario(num, codigo_bancario);
 	}
 
 	@Override
@@ -105,6 +105,11 @@ public class ProductoServiceImpl implements ProductoService {
 		return productoDao.findByDni(dni);
 	}
 
+	@Override
+	public Flux<CreditAccount> clienteDeuda(String dni) {
+		return productoDao.viewDniCliente2(dni);
+	}
+	
 	@Override
 	public Mono<Void> deleteProducto(CreditAccount prod) {
 		// TODO Auto-generated method stub

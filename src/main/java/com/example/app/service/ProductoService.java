@@ -25,4 +25,6 @@ public interface ProductoService {
 	
 	Mono<Void> deleteProducto(CreditAccount prod);
 
+	Flux<CreditAccount> clienteDeuda(String dni);
+
 }

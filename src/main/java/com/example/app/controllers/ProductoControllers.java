@@ -83,7 +83,7 @@ public class ProductoControllers {
 	@ApiOperation(value = "LISTA CREDITOS QUE NO TENGAN DEUDA - POR DNI DEL CLIENTE", notes="")
 	@GetMapping("/dniDeuda/{dni}")
 	public Flux<CreditAccount> listProductoByDicliente2(@PathVariable String dni) {
-			Flux<CreditAccount> producto = productoService.findByDni(dni);
+			Flux<CreditAccount> producto = productoService.clienteDeuda(dni);
 			return producto;
 
 	}
@@ -114,14 +114,6 @@ public class ProductoControllers {
 		return producto;
 	}
 	
-	/*@ApiOperation(value = "Muestra la cuenta bancaria por el numero de cuenta", notes="")
-	@GetMapping("/numero_cuentas/{numero_cuenta}/{codigo_bancario}")
-	public Flux<CreditAccount> consulta(@PathVariable String numero_cuenta) {
-		Flux<CreditAccount> producto = productoService.listProdNumTarj(numero_cuenta);
-		return producto;
-	}*/
-	
-	
 	@ApiOperation(value = " Muestra los saldos, deuda linea de credito de las cuentas de un cliente"
 			+ " se consulta por el numero de cuenta", notes="")
 	@GetMapping("/saldoDisponible/{numero_cuenta}/{codigo_bancario}")
@@ -129,11 +121,11 @@ public class ProductoControllers {
 
 		Mono<CreditAccount> oper = productoService.listProdNumTarj(numero_cuenta, codigo_bancario);
 
-		return oper.flatMap(c -> {
+		return oper.flatMap(c ->{
 			dtoCreditAccount pp = new dtoCreditAccount();
 			
 			pp.setDni(c.getDni());
-			pp.setNumero_cuenta(c.getNumero_cuenta());
+			pp.setNumeroCuenta(c.getNumeroCuenta());
 			pp.setSaldo(c.getSaldo());
 	
 			pp.setConsumo(c.getConsumo());

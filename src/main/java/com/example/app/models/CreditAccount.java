@@ -21,13 +21,11 @@ import lombok.ToString;
 @ToString
 @Document(collection ="cuentas_creditos")
 public class CreditAccount {
-	
-
 	@Id
 	@NotEmpty
 	private String id;
 	@NotEmpty
-	private String numero_cuenta;
+	private String numeroCuenta;
 	@NotEmpty
 	private String dni;
 	@NotEmpty
@@ -47,7 +45,7 @@ public class CreditAccount {
 	@NotEmpty
 	private String clave;
 	@NotEmpty
-	private String codigo_bancario;
+	private String codigoBancario;
 	
 
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")

@@ -32,7 +32,7 @@ public class TipoProductoControllers {
 		return Mono.just(
 				ResponseEntity
 				.ok()
-				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.contentType(MediaType.APPLICATION_JSON)
 				.body(tipoProductosService.findAllTipoproducto())
 				);
 	}
@@ -41,7 +41,7 @@ public class TipoProductoControllers {
 	@GetMapping("/{id}")
 	public Mono<ResponseEntity<TypeCreditAccount>> viewId(@PathVariable String id){
 		return tipoProductosService.findByIdTipoProducto(id).map(p-> ResponseEntity.ok()
-				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.contentType(MediaType.APPLICATION_JSON)
 				.body(p))
 				.defaultIfEmpty(ResponseEntity.notFound().build());	
 	}

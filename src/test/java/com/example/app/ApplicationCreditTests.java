@@ -32,10 +32,10 @@ class ApplicationCreditTests {
 	@Test
 	public void listCredit() {
 		credit.get().uri("/api/ProductoCredito/")
-		.accept(MediaType.APPLICATION_JSON_UTF8)
+		.accept(MediaType.APPLICATION_JSON)
 		.exchange()
 		.expectStatus().isOk()
-		.expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+		.expectHeader().contentType(MediaType.APPLICATION_JSON)
 		.expectBodyList(CreditAccount.class).consumeWith(response -> {
 			List<CreditAccount> credit = response.getResponseBody();
 			
@@ -51,19 +51,19 @@ class ApplicationCreditTests {
 	public void findByIdCredit() {
 		CreditAccount cred = creditService.findByIdProducto("5e304f943baa0732debbda85").block();
 		credit.get().uri("/api/ProductoCredito/{id}", Collections.singletonMap("id", cred.getId()))
-		.accept(MediaType.APPLICATION_JSON_UTF8)
+		.accept(MediaType.APPLICATION_JSON)
 		.exchange()
 		.expectStatus().isOk()
-		.expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8);
+		.expectHeader().contentType(MediaType.APPLICATION_JSON);
 	}
 	
 	@Test
 	public void findAllProductoByDniCliente() {
 		CreditAccount cred = creditService.findByDni("123456").blockFirst();
 		credit.get().uri("/api/ProductoCredito/dni/{dni}", Collections.singletonMap("dni", cred.getDni()))
-		.accept(MediaType.APPLICATION_JSON_UTF8)
+		.accept(MediaType.APPLICATION_JSON)
 		.exchange()
 		.expectStatus().isOk()
-		.expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8);
+		.expectHeader().contentType(MediaType.APPLICATION_JSON);
 	}
 }

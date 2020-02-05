@@ -15,7 +15,7 @@ public class dtoClient {
 	private String edad;
 	private String correo;
 	private dtoTypeClient tipoCliente;
-	private String codigo_bancario;
+	private String codigoBancario;
 }
 
 
