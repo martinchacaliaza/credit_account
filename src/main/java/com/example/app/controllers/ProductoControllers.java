@@ -118,19 +118,14 @@ public class ProductoControllers {
 			+ " se consulta por el numero de cuenta", notes="")
 	@GetMapping("/saldoDisponible/{numero_cuenta}/{codigo_bancario}")
 	public Mono<dtoCreditAccount> SaldosBancarios(@PathVariable String numero_cuenta, @PathVariable String codigo_bancario) {
-
 		Mono<CreditAccount> oper = productoService.listProdNumTarj(numero_cuenta, codigo_bancario);
-
 		return oper.flatMap(c ->{
 			dtoCreditAccount pp = new dtoCreditAccount();
-			
 			pp.setDni(c.getDni());
 			pp.setNumeroCuenta(c.getNumeroCuenta());
 			pp.setSaldo(c.getSaldo());
-	
 			pp.setConsumo(c.getConsumo());
-			pp.setCredito(c.getCredito());
-			
+			pp.setCredito(c.getCredito());		
 			return Mono.just(pp);
 		});
 

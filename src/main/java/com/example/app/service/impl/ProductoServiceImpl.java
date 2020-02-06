@@ -41,41 +41,45 @@ public class ProductoServiceImpl implements ProductoService {
 	@Override
 	public Mono<CreditAccount> saveProducto(CreditAccount cli) {
 		Mono<TypeCreditAccount> tipo = this.tipoProductoDao.findByIdTipo(cli.getTipoProducto().getIdTipo());
-			return tipo.defaultIfEmpty(new TypeCreditAccount()).flatMap(c->{
-				if (c.getIdTipo() == null) {
-					throw new RequestException("el tipo producto no existe");
+		return tipo.defaultIfEmpty(new TypeCreditAccount()).flatMap(c -> {
+			if (c.getIdTipo() == null) {
+				throw new RequestException("el tipo producto no existe");
 
+			}
+			return Mono.just(c);
+		}).flatMap(t -> {
+			cli.setTipoProducto(t);
+			Mono<dtoClient> cl = WebClient.builder().baseUrl("http://" + valor + "/clientes/api/Clientes/").build()
+					.get().uri("/dni/" + cli.getDni()).retrieve().bodyToMono(dtoClient.class);
+			return cl.flatMap(a -> {
+
+				if (a.getDni().equalsIgnoreCase("")) {
+					return Mono.empty();
+
+				} else if (!a.getCodigoBancario().equalsIgnoreCase(cli.getCodigoBancario())) {
+					throw new RequestException("Cliente no pertenece al banco(codigo bancario)");
 				}
-				return Mono.just(c);
-			}).flatMap(t -> {
-				cli.setTipoProducto(t);
-				Mono<dtoClient> cl = WebClient.builder().baseUrl("http://" + valor + "/clientes/api/Clientes/").build().get()
-						.uri("/dni/" + cli.getDni()).retrieve().bodyToMono(dtoClient.class);
-				return cl.flatMap(a -> {	
-					
-					if (a.getDni().equalsIgnoreCase("")) {
-						return Mono.empty();
-						
-					}else if(!a.getCodigoBancario().equalsIgnoreCase(cli.getCodigoBancario())) {		
-						throw new RequestException("Cliente no pertenece al banco(codigo bancario)");
-					}	
 				return productoDao.save(cli);
 			});
 
-			});
+		});
 	}
 
 	@Override
 	public Mono<CreditAccount> consumos(Double monto, String numTarjeta, String codigo_bancario) {
 		return productoDao.findByNumeroCuentaAndCodigoBancario(numTarjeta, codigo_bancario).flatMap(c -> {
-			if (monto <= c.getSaldo()) {
-				c.setSaldo((c.getSaldo() - monto));
-				c.setConsumo(c.getConsumo() + monto);
-				return productoDao.save(c);
+			{
+				if (monto <= c.getSaldo()) {
 
-			} else {
-				return Mono.error(new InterruptedException("No tiene el saldo suficiente para realizar"
-						+ " el consumo, tiene un saldo de: " + c.getSaldo()));
+					c.setSaldo((c.getSaldo() - monto));
+					c.setConsumo(c.getConsumo() + (monto));
+					return productoDao.save(c);
+				}
+
+				else {
+					return Mono.error(new InterruptedException("No tiene el saldo suficiente para realizar"
+							+ " el consumo, tiene un saldo de: " + c.getSaldo()));
+				}
 			}
 		});
 	}
@@ -85,13 +89,13 @@ public class ProductoServiceImpl implements ProductoService {
 		return productoDao.findByNumeroCuentaAndCodigoBancario(numTarjeta, codigo_bancario).flatMap(c -> {
 
 			if (c.getConsumo() == 0.0) {
-				return Mono.error(new InterruptedException("No tiene deuda"));
 
+				c.setSaldo((c.getSaldo() + monto));
 			} else {
 				c.setSaldo((c.getSaldo() + monto));
 				c.setConsumo(c.getConsumo() - monto);
-				return productoDao.save(c);
 			}
+			return productoDao.save(c);
 		});
 	}
 
@@ -109,7 +113,7 @@ public class ProductoServiceImpl implements ProductoService {
 	public Flux<CreditAccount> clienteDeuda(String dni) {
 		return productoDao.viewDniCliente2(dni);
 	}
-	
+
 	@Override
 	public Mono<Void> deleteProducto(CreditAccount prod) {
 		// TODO Auto-generated method stub
